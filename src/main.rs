@@ -33,11 +33,11 @@ fn main() {
                     match client.status {
                         ClientStatus::Connected => {
                             client.read();
-                            let message = client.message.clone();
+                            let _message = client.message.clone();
 
-                            match message.state {
+                            /*match message.state {
                                 MessageState::Full => {
-                                    match message {
+                                    /*match message {
                                         Message::auth { username, password } => {
                                             println!("Authenticating user: {}", username);
                                             println!("Password: {}", password);
@@ -57,10 +57,10 @@ fn main() {
                                             client.status = ClientStatus::Disconnected;
                                         }
                                         _ => {}
-                                    }
+                                    }*/
                                 }
                                 _ => {}
-                            }
+                            }*/
                         }
                         ClientStatus::Authenticated => {
                             client_id += 1;

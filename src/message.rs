@@ -14,6 +14,19 @@ pub enum MessageState {
     Underflow,
 }
 
+impl Clone for MessageState {
+    fn clone(&self) -> Self {
+        match *self {
+            MessageState::Empty => MessageState::Empty,
+            MessageState::Full => MessageState::Full,
+            MessageState::Overflow => MessageState::Overflow,
+            MessageState::Underflow => MessageState::Underflow,
+        }
+    }
+}
+
+impl Copy for MessageState {}
+
 #[derive(Debug, PartialEq)]
 pub enum MessageType {
     Auth,
@@ -22,6 +35,20 @@ pub enum MessageType {
     Data,
     Error,
 }
+
+impl Clone for MessageType {
+    fn clone(&self) -> Self {
+        match *self {
+            MessageType::Auth => MessageType::Auth,
+            MessageType::Form => MessageType::Form,
+            MessageType::Command => MessageType::Command,
+            MessageType::Data => MessageType::Data,
+            MessageType::Error => MessageType::Error,
+        }
+    }
+}
+
+impl Copy for MessageType {}
 
 #[derive(Debug, PartialEq)]
 pub struct Message {
