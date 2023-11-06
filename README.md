@@ -1,6 +1,8 @@
 # DoggoPass
 
---------------- LOGO PLACEHOLDER -----------------
+![](resources/DogeGuard.png)
+
+---
 
 > DoggoPass aims to be a free, open-source, self-hosted and most importantly, Rust written, alternative to BitWarden
 > This means that apart from the APIs, it will feature it's own server and client applications
