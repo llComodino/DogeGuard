@@ -188,6 +188,12 @@ impl Message {
         }
     }
 
+    pub fn parse(&mut self, buffer: &[u8]) {
+        for byte in buffer {
+            self.push(*byte);
+        }
+    }
+
     pub fn pop(&mut self) -> u8 {
         if self.state == MessageState::Empty {
             self.state = MessageState::Underflow;

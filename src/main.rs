@@ -21,61 +21,36 @@ use message::{Message, MessageState};
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
-    let mut clients = HashMap::new();
+    let mut clients : HashMap<Client, i32> = HashMap::new();
 
     for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => {
-                let mut client = Client::new(stream);
-                let mut client_id = 0;
+        let mut stream = stream.unwrap();
+        let mut buffer = [0; 1024];
+        let mut message = Message::new();
 
-                loop {
-                    match client.status {
-                        ClientStatus::Connected => {
-                            client.read();
-                            let _message = client.message.clone();
+        stream.read(&mut buffer).unwrap();
+        message.parse(&buffer);
 
-                            /*match message.state {
-                                MessageState::Full => {
-                                    /*match message {
-                                        Message::auth { username, password } => {
-                                            println!("Authenticating user: {}", username);
-                                            println!("Password: {}", password);
-                                            client.status = ClientStatus::Authenticated;
-                                        }
-                                        Message::command { command } => {
-                                            println!("Command: {}", command);
-                                        }
-                                        Message::data { data } => {
-                                            println!("Data: {}", data);
-                                        }
-                                        Message::error { error } => {
-                                            println!("Error: {}", error);
-                                        }
-                                        Message::exit => {
-                                            println!("Exiting...");
-                                            client.status = ClientStatus::Disconnected;
-                                        }
-                                        _ => {}
-                                    }*/
-                                }
-                                _ => {}
-                            }*/
-                        }
-                        ClientStatus::Authenticated => {
-                            client_id += 1;
-                            clients.insert(client_id, client);
-                            break;
-                        }
-                        ClientStatus::Disconnected => {
-                            break;
-                        }
-                    }
-                }
+        let mut client = Client::new(stream.try_clone().unwrap());
+        let mut client = Arc::new(Mutex::new(client));
+
+        let clients = Arc::new(Mutex::new(clients));
+
+        thread::spawn(move || {
+            let mut buffer = [0; 1024];
+            let mut message = Message::new();
+
+            loop {
+ 
+                let mut client = client.lock().unwrap();
+
+                client.stream.read(&mut buffer).unwrap();
+                message.parse(&buffer);
+
             }
-            Err(e) => {
-                println!("Error: {}", e);
-            }
-        }
+
+        });
+
     }
+
 }
