@@ -18,6 +18,8 @@ pub enum ClientStatus {
     Disconnected,
 }
 
+// Can't implement Copy trait
+// !!!!!!! DO NOT TRY FOR THE THIRD TIME !!!!!!!!!
 pub struct Client {
     pub stream: TcpStream,
     pub username: String,
