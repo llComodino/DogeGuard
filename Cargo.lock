@@ -3,7 +3,7 @@
 version = 3
 
 [[package]]
-name = "DoggoPass"
+name = "DogeGuard"
 version = "0.1.0"
 dependencies = [
  "chacha20poly1305",
