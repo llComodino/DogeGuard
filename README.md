@@ -36,4 +36,4 @@ If anyone for whatever reason is reading this and wants to contribute I'll be gl
 
 ---
 
-Credit to the idea goes to VaultWarden, as they have swiftly achieved the main goal of what I'm trying
+Credit to the idea goes to [VaultWarden](https://github.com/dani-garcia/vaultwarden), as they have swiftly achieved the main goal of what I'm trying

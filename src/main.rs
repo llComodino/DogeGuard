@@ -34,7 +34,7 @@ fn main() {
         let mut client = Client::new(stream.try_clone().unwrap());
         let mut client = Arc::new(Mutex::new(client));
 
-        let clients = Arc::new(Mutex::new(clients));
+        //let clients = Arc::new(Mutex::new(clients));
 
         thread::spawn(move || {
             let mut buffer = [0; 1024];
