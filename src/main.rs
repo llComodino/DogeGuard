@@ -5,52 +5,62 @@
 // - Client logout
 // - Client message sending
 // - Client message receiving
+use tokio::net::TcpListener;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
 
-use std::collections::HashMap;
-use std::io::{Read, Write};
-use std::net::{TcpListener, TcpStream};
-use std::sync::{Arc, Mutex};
-use std::thread;
-
+/* 
 mod client;
 mod message;
-// mod server;
+mod server;
 
 use client::{Client, ClientStatus};
 use message::{Message, MessageState};
+*/
 
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:8080").unwrap();
-    let mut clients : HashMap<Client, i32> = HashMap::new();
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    
+    let listener = TcpListener::bind("127.0.0.1:8080").await?;
+    
+    loop {
+        
+        let (mut socket, _) = listener.accept().await?;
+        
+        tokio::spawn(async move {
 
-    for stream in listener.incoming() {
-        let mut stream = stream.unwrap();
-        let mut buffer = [0; 1024];
-        let mut message = Message::new();
+            let mut buf = [0; 1024];
 
-        stream.read(&mut buffer).unwrap();
-        message.parse(&buffer);
-
-        let mut client = Client::new(stream.try_clone().unwrap());
-        let mut client = Arc::new(Mutex::new(client));
-
-        //let clients = Arc::new(Mutex::new(clients));
-
-        thread::spawn(move || {
-            let mut buffer = [0; 1024];
-            let mut message = Message::new();
-
+            // In a loop, read data from the socket and write the data back.
             loop {
- 
-                let mut client = client.lock().unwrap();
 
-                client.stream.read(&mut buffer).unwrap();
-                message.parse(&buffer);
+                // Ask for client authentication
+                if let Err(e) = socket.write_all(b"Please authenticate yourself\n").await {
+                    eprintln!("failed to write to socket; err = {:?}", e);
+                    return;
+                }
 
+                // Read the data
+                let n = match socket.read(&mut buf).await {
+                    // socket closed
+                    Ok(n) if n == 0 => return,
+                    Ok(n) => n,
+                    Err(e) => {
+                        eprintln!("failed to read from socket; err = {:?}", e);
+                        return;
+                    }
+                };
+
+                println!("received {} bytes from socket", n);
+                println!("data: {:?}", &buf[0..n]);
+                let content = String::from_utf8_lossy(&buf[0..n]);
+                println!("content: {:?}", content);
+
+                // Write the data back
+                if let Err(e) = socket.write_all(&buf[0..n]).await {
+                    eprintln!("failed to write to socket; err = {:?}", e);
+                    return;
+                }
             }
-
         });
-
     }
-
 }
