@@ -5,19 +5,6 @@
 // - Client logout
 // - Client message sending
 // - Client message receiving
-use tokio::net::TcpListener;
-use tokio::io::{AsyncReadExt, AsyncWriteExt};
-
-/* 
-mod client;
-mod message;
-mod server;
-
-use client::{Client, ClientStatus};
-use message::{Message, MessageState};
-*/
-
-#[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     let listener = TcpListener::bind("127.0.0.1:8080").await?;
