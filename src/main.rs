@@ -31,7 +31,7 @@ use tokio::sync::oneshot;
 use tokio::sync::oneshot::Sender as OneshotSender;
 use tokio::sync::oneshot::Receiver as OneshotReceiver;
 */
-#![feature(decl_macro)]
+
 #[get("/")]
 fn index() -> content::Html<&'static str> {
     content::Html(include_str!("./www/index.html"))
